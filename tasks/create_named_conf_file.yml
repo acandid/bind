@@ -1,0 +1,18 @@
+---
+- name: Create named.conf file in master server
+  template:
+    src: master_named.conf.j2
+    dest: /etc/named.conf
+    owner: root
+    group: named
+    mode: 0660
+  when: inventory_hostname in groups['master'] 
+#
+- name: Create named.conf file in slave server
+  template:
+    src: slave_named.conf.j2
+    dest: /etc/named.conf
+    owner: root
+    group: named
+    mode: 0660
+  when: inventory_hostname in groups['slave']

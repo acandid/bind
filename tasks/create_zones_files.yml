@@ -1,0 +1,28 @@
+---
+- block:
+    - name: manage_zones | create serial timestamp
+      command: "date +%y%m%d%H%M"
+      register: bind_timestamp
+      changed_when: false
+#
+    - name: Create zones files
+      template:
+        src: bind_zones.j2
+        dest: "{{ bind_zones_path }}/{{ bind_domain }}.db"
+        owner: root
+        backup: yes
+        group: named
+        mode: 0660
+      notify: master_restart
+#
+    - name: Create reverse zone file
+      template:
+        src: bind_reverse.j2
+        dest: "{{ bind_zones_path }}/{{ bind_reverse_file }}.db"
+        owner: root
+        backup: yes
+        group: named
+        mode: 0660
+      tags: reverse_zone
+  when: inventory_hostname in groups['master']
+...

@@ -1,0 +1,28 @@
+---
+# tasks file for bind
+- name: Include variables
+  include_vars: "{{ ansible_os_family }}.yml"
+#
+- name: Import task bind_install_packages.yml
+  import_tasks: bind_install_packages.yml
+  tags: bind_install
+#
+- name: Import task create_named_conf_file.yml
+  import_tasks: create_named_conf_file.yml
+  tags: named_conf
+#
+- name: Import task create_block_zone.yml
+  import_tasks: create_block_zone.yml
+  tags: named_conf
+#
+- name: Import task create_zones_path.yml
+  import_tasks: create_zones_path.yml
+  tags: zones_file
+#
+- name: Import task create_zones_files.yml
+  import_tasks: create_zones_files.yml
+  tags: zones_file
+#
+- debug:
+    msg: Zone for the domain {{ bind_domain }} was created successfully.
+...

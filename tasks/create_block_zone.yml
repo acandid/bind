@@ -1,0 +1,61 @@
+---
+- name: Create named.local file 
+  file:
+    path: /etc/named.local
+    state: touch
+    owner: root
+    group: named
+    mode: 0660
+#
+- block:
+    - name: Create block reverse in named.local Master
+      blockinfile:
+        path: /etc/named.local
+        block: |
+          zone "{{ bind_reverse }}.in-addr.arpa" IN {
+          type master;
+          file "{{ bind_zones_path }}/{{ bind_reverse_file }}.db";
+          };
+      tags: reverse_zone
+#
+    - name: Create block zone in named.local Master
+      blockinfile:
+        path: /etc/named.local
+        marker: "//"
+        backup: yes
+        insertafter: BOF
+        block: |
+          zone "{{ bind_domain }}" IN {
+          type master;
+          file "{{ bind_zones_path }}/{{ bind_domain }}.db";
+          };
+      tags: bind_named_local
+  when: inventory_hostname in groups['master']
+#
+- block:
+    - name: Create block reverse in named.local Slave
+      blockinfile:
+        path: /etc/named.local
+        block: |
+          zone "{{ bind_reverse }}.in-addr.arpa" {
+          type slave;
+          file "{{ bind_zones_path }}/{{ bind_reverse_file }}.db";
+          masters { {{ bind_master_ip }};};  # ns1 private IP
+          };
+      tags: reverse_zone
+#
+    - name: Create block zone in named.local Slave
+      blockinfile:
+        path: /etc/named.local
+        marker: "//"
+        backup: yes
+        insertafter: BOF
+        block: |
+          zone "{{ bind_domain }}" {
+          type slave;
+          file "{{ bind_zones_path }}/{{ bind_domain }}.db";
+          masters { {{ bind_master_ip }};};  # ns1 private IP
+          };
+      tags: bind_named_local
+      notify: restart_slave
+  when: inventory_hostname in groups['slave']        

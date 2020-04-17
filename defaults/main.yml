@@ -1,0 +1,39 @@
+---
+# defaults file for dns
+#
+bind_zones_path: /var/named/zones
+#
+bind_domain: almircandidodepaula.com
+#
+bind_reverse: '0.168.192'
+#
+bind_reverse_file: '192.168.0'
+#
+#Primary domain chosen to be the name server, must be added to all new domains that are created
+bind_name_servers:
+  - name: ns1.almircandidodepaula.com 
+  - name: ns2.almircandidodepaula.com
+#
+bind_a_records:
+  - name: ns1                  # Create the NS record in your domain that will be the name server master 
+    ip_address: 192.168.0.13
+  - name: ns2                  # Create the NS record in your domain that will be the name server slave
+    ip_address: 192.168.0.9
+  - name: '@'
+    ip_address: 192.168.0.13
+  - name: www
+    ip_address: 192.168.0.9
+#
+bind_txt_records: []
+#
+bind_cname_records: []
+#
+bind_mx_records: []
+#
+bind_master_ip: 192.168.0.13
+#
+bind_ptr_records:
+  - ip: 13
+    value: ns1.almircandidodepaula.com
+  - ip: 9
+    value: ns2.almircandidodepaula.com

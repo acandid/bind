@@ -1,0 +1,22 @@
+$TTL    3600
+@       IN      SOA    {{ bind_reverse_file }}. root.{{ bind_reverse_file }}. (
+       {{ bind_timestamp['stdout'] }}                              ; Serial
+             3600                              ; Refresh
+             1800                              ; Retry
+             2419200                           ; Expire
+             3600 )                            ; Minimum TTL
+;
+; name servers - NS records
+{% if bind_name_servers != '' %}
+{% for name_servers in bind_name_servers %}
+@     IN      NS      {{ name_servers.name }}.
+{% endfor %}
+{% endif %}
+
+; name servers - PTR records
+{% if bind_ptr_records != '' %}
+{% for ptr_records in bind_ptr_records %}
+{{ ptr_records.ip }}       IN     PTR      {{ ptr_records.value }}.
+{% endfor %}
+{% endif %}
+

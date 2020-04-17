@@ -1,0 +1,43 @@
+$TTL    3600
+@       IN      SOA    {{ bind_domain }}. root.{{ bind_domain }}. (
+       {{ bind_timestamp['stdout'] }}                              ; Serial
+             3600                              ; Refresh
+             1800                              ; Retry
+             2419200                           ; Expire
+             3600 )                            ; Minimum TTL
+;
+; name servers - NS records
+{% if bind_name_servers != '' %}
+{% for name_servers in bind_name_servers %}
+@     IN      NS      {{ name_servers.name }}.
+{% endfor %}
+{% endif %}
+
+; name servers - TXT records
+{% if bind_txt_records != '' %}
+{% for txt_records in bind_txt_records %}
+{{ txt_records.name }}         IN      TXT       {{ txt_records.value }}
+{% endfor %}
+{% endif %}
+
+; name servers - MX records
+{% if bind_a_records != '' %}
+{% for mx_records in bind_mx_records %}
+{{ mx_records.name }}         IN      MX    {{ mx_records.weight }}  {{ mx_records.value }}
+{% endfor %}
+{% endif %}
+
+; name servers - A records
+{% if bind_a_records != '' %}
+{% for a_records in bind_a_records %}
+{{ a_records.name }}           IN      A       {{ a_records.ip_address }}
+{% endfor %}
+{% endif %}
+
+; name servers - CNAME records
+{% if bind_cname_records != '' %}
+{% for cname_records in bind_cname_records %}
+{{ cname_records.name }}       IN     CNAME      {{ cname_records.value }}
+{% endfor %}
+{% endif %}
+

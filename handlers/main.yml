@@ -1,0 +1,14 @@
+---
+# handlers file for bind
+- name: master_restart
+  service:
+    name: "{{ bind_service }}"
+    state: restarted
+    enabled: yes
+#
+- name: restart_slave
+  service:
+    name: "{{ bind_service }}"
+    state: restarted
+    enabled: yes
+...

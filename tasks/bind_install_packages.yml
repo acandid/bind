@@ -1,0 +1,6 @@
+---
+- name: Install DNS packages
+  yum:
+    name: "{{ bind_packages }}"
+    state: latest
+... 
